@@ -1,0 +1,16 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Mutation {
+    validatePhone(phone: String!): Boolean
+}
+
+type Query {
+    findByPhone(phone: String!): Boolean
+    hello: String
+    isValidPhoneNumber(phone: String!): Boolean
+}

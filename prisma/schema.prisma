@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String @id @default(uuid()) @map("_id")
+  email       String @unique
+  password    String
+  username    String @unique
+  displayName String // Display name can be changed, so it's not required to be unique
+
+  // User relations
+  roomIDs  String[]
+  Room     Room[]     @relation(fields: [roomIDs], references: [id])
+  Message  Message[]
+  Reaction Reaction[]
+  Emote    Emote[]
+}
+
+model Room {
+  id        String   @id @default(uuid()) @map("_id")
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userIDs String[]
+  users   User[]    @relation(fields: [userIDs], references: [id])
+  Channel Channel[]
+  Emote   Emote[]
+}
+
+model Channel {
+  id        String   @id @default(uuid()) @map("_id")
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  room    Room      @relation(fields: [roomId], references: [id])
+  roomId  String
+  Message Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid()) @map("_id")
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Channel this message belongs to
+  channel   Channel @relation(fields: [channelId], references: [id])
+  channelId String
+
+  // Author of the message
+  author   User       @relation(fields: [authorId], references: [id])
+  authorId String
+  Reaction Reaction[]
+}
+
+model Reaction {
+  id        String   @id @default(uuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Message this reaction belongs to
+  message   Message @relation(fields: [messageId], references: [id])
+  messageId String
+
+  // Author of the reaction
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+}
+
+model Emote {
+  id        String   @id @default(uuid()) @map("_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  url       String
+  emoteName String
+
+  // Room this emote belongs to
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String
+
+  // Who uploaded the emote
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+}
