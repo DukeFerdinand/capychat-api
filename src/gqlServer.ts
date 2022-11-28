@@ -31,6 +31,11 @@ const typeDefs = gql`
         displayName: String!
     }
 
+    type UserWithToken {
+        user: User!
+        token: String!
+    }
+
     type Query {
         hello: String
 
@@ -40,7 +45,7 @@ const typeDefs = gql`
 
     type Mutation {
         createUser(userInfo: UserCreationInput!): User!
-        signInUser(userInfo: UserSignInInput!): User!
+        signInUser(userInfo: UserSignInInput!): UserWithToken!
     }
 `;
 
@@ -75,7 +80,10 @@ export const schema = makeExecutableSchema({
                     await ServiceLocator.userService.signInUser(userInfo);
 
                 if (user) {
-                    return user;
+                    const token = ServiceLocator.jwtService.sign({
+                        id: user.id,
+                    });
+                    return { user, token };
                 }
 
                 if (error === PlatformUserErrors.UnknownError) {

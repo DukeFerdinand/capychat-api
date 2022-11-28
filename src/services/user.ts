@@ -57,7 +57,9 @@ export class UserService {
         }
     }
 
-    async signInUser(userInput: UserSignInInput) {
+    async signInUser(
+        userInput: UserSignInInput
+    ): Promise<NullResponseTuple<User, PlatformUserErrors>> {
         try {
             const user = await this.dbClient.user.findUnique({
                 where: {

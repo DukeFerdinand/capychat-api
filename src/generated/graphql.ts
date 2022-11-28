@@ -17,7 +17,7 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
-  signInUser: User;
+  signInUser: UserWithToken;
 };
 
 
@@ -59,6 +59,12 @@ export type UserCreationInput = {
 export type UserSignInInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type UserWithToken = {
+  __typename?: 'UserWithToken';
+  token: Scalars['String'];
+  user: User;
 };
 
 
@@ -138,6 +144,7 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   UserCreationInput: UserCreationInput;
   UserSignInInput: UserSignInInput;
+  UserWithToken: ResolverTypeWrapper<UserWithToken>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -150,11 +157,12 @@ export type ResolversParentTypes = {
   User: User;
   UserCreationInput: UserCreationInput;
   UserSignInInput: UserSignInInput;
+  UserWithToken: UserWithToken;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInfo'>>;
-  signInUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSignInUserArgs, 'userInfo'>>;
+  signInUser?: Resolver<ResolversTypes['UserWithToken'], ParentType, ContextType, RequireFields<MutationSignInUserArgs, 'userInfo'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -170,9 +178,16 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserWithTokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserWithToken'] = ResolversParentTypes['UserWithToken']> = {
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserWithToken?: UserWithTokenResolvers<ContextType>;
 };
 
