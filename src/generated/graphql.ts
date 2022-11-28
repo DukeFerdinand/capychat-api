@@ -16,8 +16,8 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser?: Maybe<User>;
-  validatePhone: Scalars['Boolean'];
+  createUser: User;
+  signInUser: User;
 };
 
 
@@ -26,16 +26,14 @@ export type MutationCreateUserArgs = {
 };
 
 
-export type MutationValidatePhoneArgs = {
-  phone: Scalars['String'];
+export type MutationSignInUserArgs = {
+  userInfo: UserSignInInput;
 };
 
 export type Query = {
   __typename?: 'Query';
   findUserByEmail?: Maybe<User>;
-  findUserByPhone?: Maybe<User>;
   hello?: Maybe<Scalars['String']>;
-  isValidPhoneNumber: Scalars['Boolean'];
 };
 
 
@@ -43,22 +41,11 @@ export type QueryFindUserByEmailArgs = {
   email: Scalars['String'];
 };
 
-
-export type QueryFindUserByPhoneArgs = {
-  phoneNumber: Scalars['String'];
-};
-
-
-export type QueryIsValidPhoneNumberArgs = {
-  phone: Scalars['String'];
-};
-
 export type User = {
   __typename?: 'User';
   displayName: Scalars['String'];
   email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  phoneNumber: Scalars['String'];
   username: Scalars['String'];
 };
 
@@ -67,6 +54,11 @@ export type UserCreationInput = {
   email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type UserSignInInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -145,6 +137,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
   UserCreationInput: UserCreationInput;
+  UserSignInInput: UserSignInInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -156,25 +149,23 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   User: User;
   UserCreationInput: UserCreationInput;
+  UserSignInInput: UserSignInInput;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInfo'>>;
-  validatePhone?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationValidatePhoneArgs, 'phone'>>;
+  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInfo'>>;
+  signInUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSignInUserArgs, 'userInfo'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   findUserByEmail?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryFindUserByEmailArgs, 'email'>>;
-  findUserByPhone?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryFindUserByPhoneArgs, 'phoneNumber'>>;
   hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  isValidPhoneNumber?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<QueryIsValidPhoneNumberArgs, 'phone'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   displayName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

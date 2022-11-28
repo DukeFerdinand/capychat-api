@@ -18,11 +18,21 @@ model User {
   displayName String // Display name can be changed, so it's not required to be unique
 
   // User relations
+  Session  Session[]
   roomIDs  String[]
   Room     Room[]     @relation(fields: [roomIDs], references: [id])
   Message  Message[]
   Reaction Reaction[]
   Emote    Emote[]
+}
+
+model Session {
+  id      String   @id @default(uuid()) @map("_id")
+  expires DateTime
+
+  // Session relations
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Room {

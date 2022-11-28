@@ -4,8 +4,11 @@ import { gql } from "graphql-tag";
 import { ServiceLocator } from "./services/serviceLocator";
 import {
     MutationCreateUserArgs,
+    MutationSignInUserArgs,
     QueryFindUserByEmailArgs,
 } from "./generated/graphql";
+import { PlatformUserErrors } from "./services/user";
+import { createGraphQLError } from "graphql-yoga";
 
 const typeDefs = gql`
     # TODO: move this to a separate file?
@@ -14,6 +17,11 @@ const typeDefs = gql`
         password: String!
         username: String!
         displayName: String
+    }
+
+    input UserSignInInput {
+        email: String!
+        password: String!
     }
 
     type User {
@@ -31,7 +39,8 @@ const typeDefs = gql`
     }
 
     type Mutation {
-        createUser(userInfo: UserCreationInput!): User
+        createUser(userInfo: UserCreationInput!): User!
+        signInUser(userInfo: UserSignInInput!): User!
     }
 `;
 
@@ -50,7 +59,30 @@ export const schema = makeExecutableSchema({
         },
         Mutation: {
             async createUser(_parent, { userInfo }: MutationCreateUserArgs) {
-                return ServiceLocator.userService.createUser(userInfo);
+                const [newUser, error] =
+                    await ServiceLocator.userService.createUser(userInfo);
+
+                if (newUser) {
+                    return newUser;
+                }
+
+                if (error === PlatformUserErrors.UserExists) {
+                    return createGraphQLError("User already exists");
+                }
+            },
+            async signInUser(_, { userInfo }: MutationSignInUserArgs) {
+                const [user, error] =
+                    await ServiceLocator.userService.signInUser(userInfo);
+
+                if (user) {
+                    return user;
+                }
+
+                if (error === PlatformUserErrors.UnknownError) {
+                    return createGraphQLError("Something went wrong :(");
+                }
+
+                return createGraphQLError("Invalid email or password");
             },
         },
     },

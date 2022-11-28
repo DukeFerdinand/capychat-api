@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="Capybara Chat development">
+  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.43">
+    <root id="1">
+      <ServerVersion>6.1.0</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="admin"/>
+    <schema id="3" parent="1" name="capybara">
+      <Current>1</Current>
+    </schema>
+    <table id="4" parent="3" name="Channel"/>
+    <table id="5" parent="3" name="Emote"/>
+    <table id="6" parent="3" name="Message"/>
+    <table id="7" parent="3" name="Reaction"/>
+    <table id="8" parent="3" name="Room"/>
+    <table id="9" parent="3" name="User"/>
+    <table id="10" parent="3" name="VerificationCodes"/>
+    <column id="11" parent="9" name="_id">
+      <DataType>String|12s</DataType>
+      <Position>1</Position>
+    </column>
+    <column id="12" parent="9" name="displayName">
+      <DataType>String|12s</DataType>
+      <Position>2</Position>
+    </column>
+    <column id="13" parent="9" name="email">
+      <DataType>String|12s</DataType>
+      <Position>3</Position>
+    </column>
+    <column id="14" parent="9" name="password">
+      <DataType>String|12s</DataType>
+      <Position>4</Position>
+    </column>
+    <column id="15" parent="9" name="username">
+      <DataType>String|12s</DataType>
+      <Position>5</Position>
+    </column>
+  </database-model>
+</dataSource>
